@@ -47,11 +47,6 @@ export async function getLLMResponse(
       ? getOAIRequestCompletion(prompt, params, model)
       : getLLMRequestChat(prompt, params, model);
 
-  console.log(
-    "getLLMResponse url and options",
-    JSON.stringify(url),
-    JSON.stringify(options),
-  );
   const response = await Promise.race([
     fetch(url, options),
     (async () => {
@@ -177,6 +172,36 @@ export async function streamLLMResponse(
     return { message: error.error, status: response.status };
   }
 
+  const responseJSON = await response.json();
+  try {
+    if (model.includes("claude")) {
+      console.log(
+        "request for anthropic API",
+        JSON.stringify(url),
+        JSON.stringify(options),
+      );
+      // Calculate tokens and cost
+      const tokenCostResult = calculateTokensAndCostFromResponse({
+        usage: {
+          input_tokens: responseJSON.usage.prompt_tokens,
+          output_tokens: responseJSON.usage.completion_tokens,
+        },
+        model: model,
+      });
+
+      // You can now use tokenCostResult in your response or for logging
+      console.log(
+        "Token usage and cost for Anthropic Models:",
+        tokenCostResult,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Error while calcuating -> Token usage and cost for Anthropic Models:",
+      error,
+    );
+  }
+
   return response.body;
 }
 
@@ -297,10 +322,7 @@ function getLLMRequestChat(
         }),
       },
     };
-    console.log(
-      "request Payload for the anthropic API call",
-      JSON.stringify(requestPayload, null, 2),
-    );
+    console.log(requestPayload);
     return requestPayload;
   } else if (isPhindModel) {
     const phindParams = {
