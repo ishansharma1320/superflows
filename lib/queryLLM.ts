@@ -292,7 +292,14 @@ function getLLMRequestChat(
         }),
       },
     };
-    console.log(requestPayload);
+    console.log(
+      "getLLMRequestChat -> requestPayload",
+      JSON.stringify(messages.slice(1)),
+    );
+    console.log(
+      "getLLMRequestChat -> requestPayload",
+      requestPayload.options.body,
+    );
     return requestPayload;
   } else if (isPhindModel) {
     const phindParams = {
