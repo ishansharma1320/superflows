@@ -47,6 +47,11 @@ export async function getLLMResponse(
       ? getOAIRequestCompletion(prompt, params, model)
       : getLLMRequestChat(prompt, params, model);
 
+  console.log(
+    "getLLMResponse url and options",
+    JSON.stringify(url),
+    JSON.stringify(options),
+  );
   const response = await Promise.race([
     fetch(url, options),
     (async () => {
@@ -292,7 +297,10 @@ function getLLMRequestChat(
         }),
       },
     };
-    console.log(JSON.stringify(requestPayload, null, 2));
+    console.log(
+      "request Payload for the anthropic API call",
+      JSON.stringify(requestPayload, null, 2),
+    );
     return requestPayload;
   } else if (isPhindModel) {
     const phindParams = {
