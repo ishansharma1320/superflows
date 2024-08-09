@@ -140,7 +140,7 @@ export default async function handler(req: NextRequest) {
     const authRes = await supabase
       .from("organizations")
       .select(
-        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius, is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
+        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius,matching_step_model, is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
       )
       .eq("profiles.id", session.user.id)
       .single();
@@ -185,6 +185,10 @@ export default async function handler(req: NextRequest) {
       variableStrings,
       authRes.data,
     );
+    console.log(
+      "organziation specific matching_step_model",
+      org.matching_step_model,
+    );
     const response =
       "1." +
       (await exponentialRetryWrapper(
@@ -192,7 +196,9 @@ export default async function handler(req: NextRequest) {
         [
           prompt,
           { temperature: 0.6, max_tokens: 400 },
-          "anthropic/claude-3-opus-20240229",
+          org.matching_step_model
+            ? org.matching_step_model
+            : "anthropic/claude-3-opus-20240229",
         ],
         3,
       ));

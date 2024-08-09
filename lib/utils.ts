@@ -642,3 +642,59 @@ export function range(start: number, end?: number): number[] {
 
   return Array.from({ length: end - start }, (_, i) => i + start);
 }
+
+interface AnthropicAPIResponse {
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+  };
+  model: string;
+}
+
+interface TokenCostResult {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  cost: number;
+}
+
+const MODEL_COSTS = {
+  "claude-3-opus-20240229": {
+    input: 0.000015,
+    output: 0.000075,
+  },
+  "claude-3-sonnet-20240229": {
+    input: 0.000003,
+    output: 0.000015,
+  },
+  "claude-3-haiku-20240307": {
+    input: 0.00000025,
+    output: 0.00000125,
+  },
+};
+
+type SupportedModel = keyof typeof MODEL_COSTS;
+
+export function calculateTokensAndCostFromResponse(
+  response: AnthropicAPIResponse,
+): TokenCostResult {
+  const { input_tokens, output_tokens } = response.usage;
+  const totalTokens = input_tokens + output_tokens;
+
+  const model = response.model as SupportedModel;
+  if (!MODEL_COSTS[model]) {
+    throw new Error(`Unsupported model for calculating cost: ${model}`);
+  }
+
+  const modelCost = MODEL_COSTS[model];
+  const inputCost = input_tokens * modelCost.input;
+  const outputCost = output_tokens * modelCost.output;
+  const totalCost = inputCost + outputCost;
+
+  return {
+    inputTokens: input_tokens,
+    outputTokens: output_tokens,
+    totalTokens,
+    cost: totalCost,
+  };
+}
