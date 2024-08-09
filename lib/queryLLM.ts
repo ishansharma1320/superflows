@@ -274,7 +274,7 @@ function getLLMRequestChat(
     const stop_sequences = params.stop;
     const localParams = { ...params };
     delete localParams.stop;
-    return {
+    const requestPayload = {
       url: "https://api.anthropic.com/v1/messages",
       options: {
         method: "POST",
@@ -292,6 +292,8 @@ function getLLMRequestChat(
         }),
       },
     };
+    console.log(JSON.stringify(requestPayload, null, 2));
+    return requestPayload;
   } else if (isPhindModel) {
     const phindParams = {
       ...defaultParams,
