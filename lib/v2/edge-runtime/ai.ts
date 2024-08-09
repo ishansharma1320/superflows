@@ -905,6 +905,7 @@ async function runCodeGen(
     | "description"
     | "chatbot_instructions"
     | "fun_loading_messages"
+    | "matching_step_model"
   >,
   dbData: { conversationId: number; index: number },
   userDescription: string,

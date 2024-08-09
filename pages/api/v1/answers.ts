@@ -140,7 +140,7 @@ export default async function handler(req: NextRequest) {
       const authRes = await serviceLevelSupabase
         .from("organizations")
         .select(
-          "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fun_loading_messages,bertie_disable_direct,enable_data_analysis,yond_cassius,fallback_to_bertie, is_paid(is_premium), finetuned_models(openai_name)",
+          "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fun_loading_messages,bertie_disable_direct,enable_data_analysis,yond_cassius,matching_step_model,fallback_to_bertie, is_paid(is_premium), finetuned_models(openai_name)",
         )
         .eq("api_key", orgApiKey);
       if (authRes.error) throw new Error(authRes.error.message);

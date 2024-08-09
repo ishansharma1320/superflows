@@ -9,7 +9,10 @@ import {
   RunPodResponse,
   TogetherAIResponse,
 } from "./models";
-import { removeEmptyCharacters } from "./utils";
+import {
+  removeEmptyCharacters,
+  calculateTokensAndCostFromResponse,
+} from "./utils";
 
 export const defaultParams: ChatGPTParams = {
   // This max tokens number is the maximum output tokens
@@ -38,6 +41,7 @@ export async function getLLMResponse(
       `String prompts only supported with model gpt-3.5-turbo-instruct. You have selected model: ${model}`,
     );
 
+  console.log("getLLMResponse matching_step_model", model);
   const { url, options } =
     typeof prompt === "string"
       ? getOAIRequestCompletion(prompt, params, model)
@@ -60,7 +64,7 @@ export async function getLLMResponse(
     await response.json();
   if (response.status >= 300) {
     console.log(
-      "Response from LLM: ",
+      "Response from LLM: (3**) ",
       JSON.stringify(responseJson, undefined, 2),
     );
   }
@@ -77,6 +81,35 @@ export async function getLLMResponse(
   if ("error" in responseJson) {
     throw Error(
       `Error from LLM provider: ${JSON.stringify(responseJson.error)}`,
+    );
+  }
+
+  console.log(
+    "Response from LLM: (Success)",
+    JSON.stringify(responseJson, undefined, 2),
+  );
+
+  try {
+    if (model.includes("claude")) {
+      // Calculate tokens and cost
+      const tokenCostResult = calculateTokensAndCostFromResponse({
+        usage: {
+          input_tokens: responseJson.usage.prompt_tokens,
+          output_tokens: responseJson.usage.completion_tokens,
+        },
+        model: model,
+      });
+
+      // You can now use tokenCostResult in your response or for logging
+      console.log(
+        "Token usage and cost for Anthropic Models:",
+        tokenCostResult,
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Error while calcuating -> Token usage and cost for Anthropic Models:",
+      error,
     );
   }
 

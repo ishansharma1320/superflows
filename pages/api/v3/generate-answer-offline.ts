@@ -162,7 +162,7 @@ export default async function handler(req: NextRequest) {
     const authRes = await serviceLevelSupabase
       .from("organizations")
       .select(
-        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius, is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
+        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius,matching_step_model, is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
       )
       .eq("profiles.id", session.user.id)
       .single();

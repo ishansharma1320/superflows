@@ -86,6 +86,7 @@ export async function runDataAnalysis(
     | "description"
     | "chatbot_instructions"
     | "fun_loading_messages"
+    | "matching_step_model"
   >,
   dbData: { conversationId: number; index: number },
   userDescription: string,
@@ -204,7 +205,11 @@ export async function runDataAnalysis(
                 ...GPTDataAnalysisLLMParams,
                 temperature: nLoops === 0 ? 0.1 : 0.8,
               },
-              i === 1 ? "gpt-4" : "anthropic/claude-3-opus-20240229",
+              i === 1
+                ? "gpt-4"
+                : org.matching_step_model
+                ? org.matching_step_model
+                : "anthropic/claude-3-opus-20240229",
               shouldTerminateDataAnalysisStreaming,
               () => {}, // Don't stream as of yet - we want to for debugging purposes
               i === 1 ? "GPT data analysis" : "Opus data analysis",

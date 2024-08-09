@@ -240,6 +240,10 @@ export async function matchQuestionToAnswer(
   // No valid function chosen or tell user message and retries not maxed out
   while (!chosenMatch && !parsedMatchingOut?.tellUser && numRetries < 2) {
     numRetries += 1;
+    console.log(
+      "organziation specific matching_step_model",
+      org.matching_step_model,
+    );
     const llmOut = await streamWithEarlyTermination(
       matchingPrompt,
       {
@@ -254,7 +258,9 @@ export async function matchQuestionToAnswer(
           "</tellUser",
         ],
       },
-      "anthropic/claude-3-opus-20240229",
+      org.matching_step_model
+        ? org.matching_step_model
+        : "anthropic/claude-3-opus-20240229",
       () => false,
       async (transformed: string) => {
         const newContent = transformed.replace(transformedOut, "");

@@ -826,6 +826,7 @@ export type Database = {
           name: string;
           sanitize_urls_first: boolean;
           yond_cassius: boolean;
+          matching_step_model: string;
         };
         Insert: {
           api_key?: string;

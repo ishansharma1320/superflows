@@ -22,6 +22,7 @@ export async function streamWithEarlyTermination(
    * function has both raw and transformed outputs.
    * null output means there's been an error **/
   const startTime = Date.now();
+  console.log("streamWithEarlyTermination matching_step_model", model);
   let res = await exponentialRetryWrapper(
     streamLLMResponse,
     [prompt, params, model],

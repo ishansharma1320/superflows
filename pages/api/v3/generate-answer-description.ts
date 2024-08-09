@@ -181,7 +181,7 @@ export default async function handler(req: NextRequest) {
     const authRes = await supabase
       .from("organizations")
       .select(
-        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius, is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
+        "id,name,api_key,description,model,sanitize_urls_first,language,chat_to_docs_enabled,chatbot_instructions,bertie_enabled,fallback_to_bertie,yond_cassius,matching_step_model,is_paid(is_premium), finetuned_models(openai_name), profiles!inner(id)",
       )
       .eq("profiles.id", session.user.id)
       .single();
@@ -415,7 +415,11 @@ async function generateFnNameAndDescription(
   primaryQ: Pick<ApprovalQuestion, "id" | "primary_question" | "text">,
   org: Pick<
     Organization,
-    "id" | "name" | "description" | "chat_to_docs_enabled"
+    | "id"
+    | "name"
+    | "description"
+    | "chat_to_docs_enabled"
+    | "matching_step_model"
   >,
   similarFunctions: SimilarFunction[],
 ): Promise<ParsedResponse | Response> {
@@ -529,7 +533,9 @@ async function generateFnNameAndDescription(
     [
       prompt,
       { temperature: 0.4, max_tokens: 200, stop: ["</functionName"] },
-      "anthropic/claude-3-opus-20240229",
+      org.matching_step_model
+        ? org.matching_step_model
+        : "anthropic/claude-3-opus-20240229",
     ],
     3,
   );
