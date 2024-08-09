@@ -172,36 +172,6 @@ export async function streamLLMResponse(
     return { message: error.error, status: response.status };
   }
 
-  const responseJSON = await response.json();
-  try {
-    if (model.includes("claude")) {
-      console.log(
-        "request for anthropic API",
-        JSON.stringify(url),
-        JSON.stringify(options),
-      );
-      // Calculate tokens and cost
-      const tokenCostResult = calculateTokensAndCostFromResponse({
-        usage: {
-          input_tokens: responseJSON.usage.prompt_tokens,
-          output_tokens: responseJSON.usage.completion_tokens,
-        },
-        model: model,
-      });
-
-      // You can now use tokenCostResult in your response or for logging
-      console.log(
-        "Token usage and cost for Anthropic Models:",
-        tokenCostResult,
-      );
-    }
-  } catch (error) {
-    console.error(
-      "Error while calcuating -> Token usage and cost for Anthropic Models:",
-      error,
-    );
-  }
-
   return response.body;
 }
 
