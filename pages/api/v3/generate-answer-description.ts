@@ -535,7 +535,7 @@ async function generateFnNameAndDescription(
       { temperature: 0.4, max_tokens: 200, stop: ["</functionName"] },
       org.matching_step_model
         ? org.matching_step_model
-        : "anthropic/claude-3-opus-20240229",
+        : "anthropic/claude-3-5-sonnet-20240620", //"anthropic/claude-3-opus-20240229",
     ],
     3,
   );

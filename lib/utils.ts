@@ -659,15 +659,15 @@ interface TokenCostResult {
 }
 
 const MODEL_COSTS = {
-  "claude-3-opus-20240229": {
+  "anthropic/claude-3-opus-20240229": {
     input: 0.000015,
     output: 0.000075,
   },
-  "claude-3-sonnet-20240229": {
+  "anthropic/claude-3-sonnet-20240229": {
     input: 0.000003,
     output: 0.000015,
   },
-  "claude-3-haiku-20240307": {
+  "anthropic/claude-3-haiku-20240307": {
     input: 0.00000025,
     output: 0.00000125,
   },

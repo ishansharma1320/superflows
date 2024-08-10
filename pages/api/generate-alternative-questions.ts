@@ -198,7 +198,7 @@ export default async function handler(req: NextRequest) {
           { temperature: 0.6, max_tokens: 400 },
           org.matching_step_model
             ? org.matching_step_model
-            : "anthropic/claude-3-opus-20240229",
+            : "anthropic/claude-3-5-sonnet-20240620", //"anthropic/claude-3-opus-20240229",
         ],
         3,
       ));
