@@ -667,6 +667,10 @@ const MODEL_COSTS = {
     input: 0.000003,
     output: 0.000015,
   },
+  "anthropic/claude-3-5-sonnet-20240620": {
+    input: 0.000003,
+    output: 0.000015,
+  },
   "anthropic/claude-3-haiku-20240307": {
     input: 0.00000025,
     output: 0.00000125,
