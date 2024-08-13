@@ -135,10 +135,10 @@ ${args.matches.map((m) => toTSDescription(m, args.variables)).join("\n\n")}
       role: "user",
       content: args.userRequest,
     },
-    // ,{
-    //   role: "assistant",
-    //   content: "<thinking>\n1. The user is requesting",
-    // },
+    {
+      role: "assistant",
+      content: "<thinking>\n1. The user is requesting",
+    },
   ];
 }
 
