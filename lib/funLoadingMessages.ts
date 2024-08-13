@@ -1,18 +1,21 @@
 import { StreamingStepInput } from "@superflows/chat-ui-react/dist/src/lib/types";
 
 export const funLoadingMessages = [
-  "Forming figures fairly fast",
-  "Chiseling out charts",
-  "Assembling amazing analytics",
-  "Concocting clever calculations",
-  "Mustering magnificent metrics",
-  "Summoning scintillating stats",
-  "Brewing bar graphs",
-  "Unleashing data hounds",
-  "Brewing you a fresh cup of insights",
-  "Fishing for fancy figures",
-  "Fetching fantastic facts",
-  "Diving deep into the data",
+  // "Forming figures fairly fast",
+  // "Chiseling out charts",
+  // "Assembling amazing analytics",
+  // "Concocting clever calculations",
+  // "Mustering magnificent metrics",
+  // "Summoning scintillating stats",
+  // "Brewing bar graphs",
+  // "Unleashing data hounds",
+  // "Brewing you a fresh cup of insights",
+  // "Fishing for fancy figures",
+  // "Fetching fantastic facts",
+  // "Diving deep into the data",
+  "Performing data analysis",
+  "Extracting data insights",
+  "Fetching actionable information",
 ];
 
 export async function sendFunLoadingMessages<PromiseResponse>(
