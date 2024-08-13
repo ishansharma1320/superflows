@@ -675,6 +675,10 @@ const MODEL_COSTS = {
     input: 0.00000025,
     output: 0.00000125,
   },
+  "models/gemini-1.5-flash-latest": {
+    input: 0.000000075,
+    output: 0.0000003,
+  },
 };
 
 type SupportedModel = keyof typeof MODEL_COSTS;
@@ -687,6 +691,7 @@ export function calculateTokensAndCostFromResponse(
 
   const model = response.model as SupportedModel;
   if (!MODEL_COSTS[model]) {
+    console.log("MODELS_COSTS", JSON.stringify(MODEL_COSTS));
     throw new Error(`Unsupported model for calculating cost: ${model}`);
   }
 
@@ -694,6 +699,19 @@ export function calculateTokensAndCostFromResponse(
   const inputCost = input_tokens * modelCost.input;
   const outputCost = output_tokens * modelCost.output;
   const totalCost = inputCost + outputCost;
+
+  // price compare with gemini models 1.5 flash
+  const gemini_modelCost = MODEL_COSTS["models/gemini-1.5-flash-latest"];
+  const gemini_inputCost = input_tokens * gemini_modelCost.input;
+  const gemini_outputCost = output_tokens * gemini_modelCost.output;
+  const gemini_totalCost = gemini_inputCost + gemini_outputCost;
+  console.log(
+    "price comparsion for this step with selected model : currentModelCost",
+    totalCost,
+    "geminiModelCost",
+    gemini_totalCost,
+  );
+  //
 
   return {
     inputTokens: input_tokens,
