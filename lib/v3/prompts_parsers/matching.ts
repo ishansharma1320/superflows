@@ -193,7 +193,10 @@ export function parseMatchingOutput(
   variables: ApprovalVariable[],
 ): MatchingParsedResponse {
   const tellUserMatch = text.match(/<tellUser>([\s\S]*)/);
-  const tellUser = tellUserMatch ? tellUserMatch[1] : "";
+  let tellUser = tellUserMatch ? tellUserMatch[1] : "";
+
+  tellUser = tellUser.replaceAll("<tellUser>", "") || tellUser;
+  tellUser = tellUser.replaceAll("</tellUser>", "") || tellUser;
 
   const isFunctionCall = Boolean(text.match(/<functionCall>/));
   if (!isFunctionCall) {

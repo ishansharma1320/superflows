@@ -192,10 +192,10 @@ export function formatChatHistoryToAnthropicFormat(
     .map((m, idx) => {
       if (m.role === "function") return null;
       const out = [m];
-      // if (m.role === "assistant" && chatHistory[idx + 1]?.role !== "user") {
-      //   // This covers the DIRECT case (user-assistant-function)
-      //   out.push({ role: "user", content: "" });
-      // }
+      if (m.role === "assistant" && chatHistory[idx + 1]?.role !== "user") {
+        // This covers the DIRECT case (user-assistant-function)
+        out.push({ role: "user", content: "..." });
+      }
       let localIdx = idx + 1;
       while (
         localIdx < chatHistory.length &&
