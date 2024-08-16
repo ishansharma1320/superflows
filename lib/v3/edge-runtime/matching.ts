@@ -536,7 +536,8 @@ async function executeMessages(
       );
       const codeOk = checkCodeExecutionOutput(returnedData);
       if (!codeOk.isValid) {
-        console.error("Error from generated code:", codeOk.error);
+        console.error("Error", codeOk.error);
+        throw new Error("Error from generated code");
       }
       if (returnedData !== null) {
         const graphDataArr = convertToGraphData(returnedData);

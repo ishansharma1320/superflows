@@ -143,6 +143,7 @@ export interface ChatGPTParams {
   temperature?: number;
   max_tokens?: number;
   top_p?: number;
+  top_k?: number;
   n?: number;
   stream?: boolean;
   stop?: string | string[] | null;

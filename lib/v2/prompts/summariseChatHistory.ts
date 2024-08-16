@@ -22,7 +22,7 @@ export function chatHistorySummaryPrompt(
     prompt: [
       {
         role: "system",
-        content: `Condense the user's most recent unanswered request. This should include relevant information they've given from the PAST_CONVERSATION. The instruction you write alone is passed to an AI that will carry it out, with no other context.
+        content: `Condense the user's most recent unanswered request. This should include relevant information they've given from the PAST_CONVERSATION including the date or date range they used. The instruction you write alone is passed to an AI that will carry it out, with no other context.
 ${org.name ? `\nYou're embedded in ${org.name}. ` : ""}${
           org.description ?? ""
         }${org.name || org.description ? "\n" : ""}
@@ -64,7 +64,7 @@ USER_MESSAGE: ${chatHistory[chatHistory.length - 1].content}
 RULES:
 1. DO NOT reply to USER_MESSAGE
 2. DO NOT summarise the assistant's messages
-3. Include all relevant information from PAST_CONVERSATION. Your output must be standalone and fully describe the user's request
+3. Include all relevant information most importantly date and date ranges from PAST_CONVERSATION so that it can be used to answer next USER_MESSAGE. Your output must be standalone and fully describe the user's request
 4. Write from the user's perspective - in the first-person
 5. NEVER reference past messages in the conversation. Example: don't say "the previous table"
 6. ${languageLine(language)}

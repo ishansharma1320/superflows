@@ -9,10 +9,7 @@ import {
   RunPodResponse,
   TogetherAIResponse,
 } from "./models";
-import {
-  removeEmptyCharacters,
-  calculateTokensAndCostFromResponse,
-} from "./utils";
+import { removeEmptyCharacters } from "./utils";
 
 export const defaultParams: ChatGPTParams = {
   // This max tokens number is the maximum output tokens
@@ -89,29 +86,29 @@ export async function getLLMResponse(
     JSON.stringify(responseJson, undefined, 2),
   );
 
-  try {
-    if (model.includes("claude")) {
-      // Calculate tokens and cost
-      const tokenCostResult = calculateTokensAndCostFromResponse({
-        usage: {
-          input_tokens: responseJson.usage.prompt_tokens,
-          output_tokens: responseJson.usage.completion_tokens,
-        },
-        model: model,
-      });
+  // try {
+  //   if (model.includes("claude")) {
+  //     // Calculate tokens and cost
+  //     const tokenCostResult = calculateTokensAndCostFromResponse({
+  //       usage: {
+  //         input_tokens: responseJson.usage.prompt_tokens,
+  //         output_tokens: responseJson.usage.completion_tokens,
+  //       },
+  //       model: model,
+  //     });
 
-      // You can now use tokenCostResult in your response or for logging
-      console.log(
-        "Token usage and cost for Anthropic Models:",
-        tokenCostResult,
-      );
-    }
-  } catch (error) {
-    console.error(
-      "Error while calcuating -> Token usage and cost for Anthropic Models:",
-      error,
-    );
-  }
+  //     // You can now use tokenCostResult in your response or for logging
+  //     console.log(
+  //       "Token usage and cost for Anthropic Models:",
+  //       tokenCostResult,
+  //     );
+  //   }
+  // } catch (error) {
+  //   console.error(
+  //     "Error while calcuating -> Token usage and cost for Anthropic Models:",
+  //     error,
+  //   );
+  // }
 
   return removeEmptyCharacters(textFromResponse(responseJson)).trim();
 }
@@ -222,6 +219,7 @@ function getLLMRequestChat(
   const isPhindModel = model.includes("Phind");
   const isAnthropicModel = model.includes("anthropic");
   const isGroqModel = model.startsWith("groq");
+  const isGeminiModel = model.startsWith("gemini");
   const isOS = isOSModel(model);
 
   let key: string, url: string;
@@ -300,6 +298,55 @@ function getLLMRequestChat(
       "getLLMRequestChat -> requestPayload",
       requestPayload.options.body,
     );
+    return requestPayload;
+  } else if (isGeminiModel) {
+    // Gemini 1.5 flash
+    const apiKey = process.env.GOOGLE_API_KEY!;
+    if (!apiKey) {
+      throw new Error("Google API key is not set");
+    }
+
+    const geminiUrl =
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+
+    const requestPayload = {
+      url: `${geminiUrl}?key=${apiKey}`,
+      options: {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: messages.slice(1).map((msg) => ({
+            role: msg.role === "assistant" ? "model" : "user",
+            parts: [{ text: msg.content }],
+          })),
+          generationConfig: {
+            temperature: params.temperature,
+            topP: params.top_p,
+            topK: params.top_k,
+            maxOutputTokens: params.max_tokens,
+            stopSequences: params.stop,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_DANGEROUS",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE",
+            },
+          ],
+        }),
+      },
+    };
+
+    console.log(
+      "getLLMRequestChat -> requestPayload for Gemini",
+      JSON.stringify(messages.slice(1)),
+    );
+    console.log(
+      "getLLMRequestChat -> requestPayload for Gemini",
+      requestPayload.options.body,
+    );
+
     return requestPayload;
   } else if (isPhindModel) {
     const phindParams = {
