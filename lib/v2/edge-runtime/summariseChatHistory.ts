@@ -20,18 +20,22 @@ export async function summariseChatHistory(
     chatHistorySummaryPrompt(chatHistory, org, language);
   console.log("Prompt for summariseChatHistory: ", prompt[0].content);
   const use4 = numPastMessagesIncluded >= 5 || pastConvTokenCount > 100;
+  const modelToUseForSummary = use4
+    ? // ? "anthropic/claude-3-5-sonnet-20240620"
+      // : "anthropic/claude-3-haiku-20240307";
+      "gpt-4"
+    : "gpt-4-0125-preview";
+
+  // // claude models need at least one message object but for summarization so modifying the prompt accordingly
+  // let nonSystemMessages = prompt.filter(p => p.role !== "system");
+  // if(nonSystemMessages.length === 0 && modelToUseForSummary.includes("anthropic")){
+  //   prompt.push({role: "user", content: chatHistory[chatHistory.length - 1].content});
+  // }
+  // //
+
   let out: string = await exponentialRetryWrapper(
     getLLMResponse,
-    [
-      prompt,
-      summariseChatHistoryLLMParams,
-      org.matching_step_model
-        ? org.matching_step_model
-        : use4
-        ? "anthropic/claude-3-5-sonnet-20240620"
-        : "anthropic/claude-3-haiku-20240307",
-      //use4 ? "gpt-4" : "gpt-4-0125-preview",
-    ],
+    [prompt, summariseChatHistoryLLMParams, modelToUseForSummary],
     3,
   );
   console.log("Summarised user request:", out);

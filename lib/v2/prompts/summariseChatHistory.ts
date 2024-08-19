@@ -18,6 +18,12 @@ export function chatHistorySummaryPrompt(
 } {
   const { pastConversation, numPastMessagesIncluded } =
     getChatHistoryText(chatHistory);
+
+  console.log(
+    "Summarization chat history getChatHistoryText",
+    pastConversation,
+    numPastMessagesIncluded,
+  );
   return {
     prompt: [
       {
